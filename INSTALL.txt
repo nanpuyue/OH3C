@@ -46,4 +46,9 @@ config interface 'wan'
 
         option macaddr '00:00:00:00:00:00'
 
-把其中00:00:00:00:00:00的换成你的mac。
+把其中00:00:00:00:00:00的换成你的mac;
+
+mac修改后重启网络（不是重启路由器）才能生效：
+
+./etc/init.d/network restart
+
