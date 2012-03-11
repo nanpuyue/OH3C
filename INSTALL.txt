@@ -14,11 +14,23 @@ scp -r [本地路径]yah3c root@192.168.1.1:/usr
 scp -r [本地路径]root root@192.168.1.1:/
 
 
-使用ssh登录并运行yah3c：
+使用ssh登录：
 
 ssh -l root 192.168.1.1
 
-yah3c (或 python /usr/yah3c/yah3c.py)
+赋予权限及创建链接：
+
+chmod 777 /usr/yah3c/scripts/yah3c
+
+ln -s -f /usr/yah3c/scripts/yah3c /usr/bin/yah3c
+
+运行yah3c：
+
+yah3c
+
+或 python /usr/yah3c/yah3c.py
+
+
 
 如果有绑定mac的，修改network即可：
 
