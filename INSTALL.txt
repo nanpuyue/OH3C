@@ -19,3 +19,19 @@ scp -r [本地路径]root root@192.168.1.1:/
 ssh -l root 192.168.1.1
 
 yah3c (或 python /usr/yah3c/yah3c.py)
+
+如果有绑定mac的，修改network即可：
+
+vi /etc/config/network
+
+修改成下面的样子：
+
+config interface 'wan'
+
+        option ifname 'eth1'
+
+        option proto 'dhcp'
+
+        option macaddr '00:00:00:00:00:00'
+
+把其中00:00:00:00:00:00的换成你的mac。
