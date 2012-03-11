@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-""" Main program for YaH3C.
+""" Main program for oh3c.
 
 """
 
@@ -11,7 +11,7 @@ import ConfigParser
 from socket import *
 
 import eapauth
-import usermanager
+import usermgr
             
 def prompt_user_info():
     name = raw_input('Input user name: ')
@@ -26,7 +26,7 @@ def main():
         print ('Require the permission of root!')
         exit(-1)
 
-    um = usermanager.UserManager()
+    um = usermgr.usermgr()
     login_info = []
     if (um.get_user_number() == 0):
         choice = raw_input('No user conf file found, creat a new one?\n<Y/N>: ')
@@ -55,8 +55,8 @@ def main():
                 print 'user already exist!'
         else: login_info =  um.get_user_info(choice-1)
 
-    yah3c = eapauth.EAPAuth(login_info)
-    yah3c.serve_forever()
+    oh3c = eapauth.EAPAuth(login_info)
+    oh3c.serve_forever()
 
 
 if __name__ == "__main__":

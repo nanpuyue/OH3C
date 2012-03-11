@@ -41,7 +41,7 @@ class EAPAuth:
 
     def load_plugins(self):
         homedir = os.path.expanduser('~'+os.getenv('USER')) 
-        sys.path.insert(0, homedir + '/.yah3c/plugins')
+        sys.path.insert(0, homedir + '/.oh3c/plugins')
         self.load_plugins = map(__import__, self.loading_plugin_names)
         #for loading_plugin_name in self.loading_plugin_names:
             #loaded_plugin = __import__('plugins.' + loading_plugin_name)

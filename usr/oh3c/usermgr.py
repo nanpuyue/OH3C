@@ -3,16 +3,16 @@
 This module reads the 'users.conf' file and gets all users's logging info.
 """
 
-__all__ = ["UserManager"]
+__all__ = ["usermgr"]
 
 import ConfigParser
 import os
 
 #user_info_index = ['account', 'password', 'device']
 
-class UserManager:
+class usermgr:
     def __init__(self):
-        self.users_logging_file_dir = os.path.expanduser('~'+os.getenv('USER') + '/.yah3c/users.conf')
+        self.users_logging_file_dir = os.path.expanduser('~'+os.getenv('USER') + '/.oh3c/users.conf')
         self.cf = ConfigParser.ConfigParser()
         self.cf.read(self.users_logging_file_dir)
        
