@@ -10,14 +10,7 @@ __all__ = ["EAPAuth"]
 from socket import *
 import os, sys, pwd
 
-from colorama import Fore, Style, init
-# init() # required in Windows
 from eappacket import *
-
-def display_prompt(color, string):
-    prompt = color + Style.BRIGHT + '==> ' + Style.RESET_ALL
-    prompt += Style.BRIGHT + string + Style.RESET_ALL
-    print prompt
 
 def display_packet(packet):
     # print ethernet_header infomation
@@ -67,7 +60,7 @@ class EAPAuth:
         eap_start_packet = self.ethernet_header + get_EAPOL(EAPOL_START)
         self.client.send(eap_start_packet)
 
-        display_prompt(Fore.GREEN, 'Sending EAPOL start')
+        print 'Sending EAPOL start'
 
     def send_logoff(self):
         # invoke plugins 
@@ -78,7 +71,7 @@ class EAPAuth:
         self.client.send(eap_logoff_packet)
         self.has_sent_logoff = True
 
-        display_prompt(Fore.GREEN, 'Sending EAPOL logoff')
+        print 'Sending EAPOL logoff'
 
     def send_response_md5(self): pass 
     def send_response_id(self, packet_id):
@@ -115,43 +108,43 @@ class EAPAuth:
         if type == EAPOL_EAPPACKET:
             code, id, eap_len = unpack("!BBH", eap_packet[4:8])
             if code == EAP_SUCCESS:
-                display_prompt(Fore.YELLOW, 'Got EAP Success')
+                print 'Got EAP Success'
                 # invoke plugins 
                 self.invoke_plugins('after_auth_succ')
                 daemonize('/dev/null','/tmp/daemon.log','/tmp/daemon.log')
             elif code == EAP_FAILURE:
                 if (self.has_sent_logoff):
-                    display_prompt(Fore.YELLOW, 'Logoff Successfully!')
+                    print 'Logoff Successfully!'
                     # invoke plugins 
                     self.invoke_plugins('after_logoff')
                     self.display_login_message(eap_packet[10:])
                 else:
-                    display_prompt(Fore.YELLOW, 'Got EAP Failure')
+                    print 'Got EAP Failure'
                     # invoke plugins 
                     self.invoke_plugins('after_auth_fail')
                     self.display_login_message(eap_packet[10:])
                 exit(-1)
             elif code == EAP_RESPONSE:
-                display_prompt(Fore.YELLOW, 'Got Unknown EAP Response')
+                print 'Got Unknown EAP Response'
             elif code == EAP_REQUEST:
                 reqtype = unpack("!B", eap_packet[8:9])[0]
                 reqdata = eap_packet[9:4 + eap_len]
                 if reqtype == EAP_TYPE_ID:
-                    display_prompt(Fore.YELLOW, 'Got EAP Request for identity')
+                    print 'Got EAP Request for identity'
                     self.send_response_id(id)
-                    display_prompt(Fore.GREEN, 'Sending EAP response with identity = [%s]' % self.login_info[0])
+                    print 'Sending EAP response with identity = [%s]' % self.login_info[0]
                 elif reqtype == EAP_TYPE_H3C:
-                    display_prompt(Fore.YELLOW, 'Got EAP Request for Allocation')
+                    print 'Got EAP Request for Allocation'
                     self.send_response_h3c(id)
-                    display_prompt(Fore.GREEN, 'Sending EAP response with password')
+                    print 'Sending EAP response with password'
                 else:
-                    display_prompt(Fore.YELLOW, 'Got unknown Request type (%i)' % reqtype)
+                    print 'Got unknown Request type (%i)' % reqtype
             elif code==10 and id==5:
                 self.display_login_message(eap_packet[12:])
             else:
-                display_prompt(Fore.YELLOW, 'Got unknown EAP code (%i)' % code)
+                print 'Got unknown EAP code (%i)' % code
         else:
-            display_prompt(Fore.YELLOW, 'Got unknown EAPOL type %i' % type)
+            print 'Got unknown EAPOL type %i' % type
 
     def serve_forever(self):
         try:

@@ -4,7 +4,7 @@
 
 """
 
-__version__ = '0.1'
+__version__ = '0.2'
 
 import os, sys
 import ConfigParser
@@ -12,13 +12,16 @@ from socket import *
 
 import eapauth
 import usermgr
-            
+import macmgr
+           
 def prompt_user_info():
-    name = raw_input('Input user name: ')
-    password = raw_input('Input password: ')
+    name = raw_input('Input user name:')
+    password = raw_input('Input password:')
     dev = raw_input('Decice(eth1 by default): ')
     if not dev: dev = 'eth1'
-    return name, password, dev
+    macaddr = raw_input('MAC:\n ')
+    if not macaddr: macaddr = 'default'
+    return name, password, dev,macaddr
 
 def main():
     # check for root privilege
@@ -54,8 +57,13 @@ def main():
             except ConfigParser.DuplicateSectionError:
                 print 'user already exist!'
         else: login_info =  um.get_user_info(choice-1)
-
-    oh3c = eapauth.EAPAuth(login_info)
+    macaddr = login_info[3]
+    line_of_mac = macmgr.get_line_of_mac("'wan'")
+    if ((macaddr != 'default') and (macaddr not in line_of_mac)):
+    	macmgr.change_mac("'wan'",login_info[3])
+	macmgr.apply_mac()
+    login_info_new = login_info[0:3]
+    oh3c = eapauth.EAPAuth(login_info_new)
     oh3c.serve_forever()
 
 
