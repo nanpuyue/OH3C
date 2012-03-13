@@ -59,8 +59,8 @@ def main():
         else: login_info =  um.get_user_info(choice-1)
     macaddr = login_info[3]
     line_of_mac = macmgr.get_line_of_mac("'wan'")
-    if ((macaddr != 'default') and (macaddr not in line_of_mac)):
-        macmgr.change_mac("'wan'",login_info[3])
+    if macaddr not in line_of_mac and macaddr != 'default':
+        macmgr.change_mac("'wan'",macaddr)
         macmgr.apply_mac()
     login_info_new = login_info[0:3]
     oh3c = eapauth.EAPAuth(login_info_new)

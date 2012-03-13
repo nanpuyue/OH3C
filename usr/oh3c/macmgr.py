@@ -32,8 +32,8 @@ def seek_in_list(target,list_name,start_number):
     for i in range(start_number,length):
         if target in list_name[i]:
             break
-    if ((i == length) and (target not in list_name[i])):
-        return False
+    if target not in list_name[i]:
+        return 'None'
     else:
         return i
 
@@ -43,8 +43,8 @@ def get_info_of(interface):
     b = seek_in_list('config',config_list,a+1)
     config_list_light = config_list[a:b]
     c = seek_in_list('option macaddr',config_list_light,0)
-    if c == False:
-        return False
+    if c == 'None':
+        return 'None'
     else:
 	return a+c
 
@@ -61,38 +61,24 @@ def add_mac(interface,macaddr):
 
 def change_mac(interface,macaddr):
     i = get_info_of(interface)
-    if i == False:
-    	try:
-    	    macmgr.add_mac(interface,macaddr)
-	    return True
-        except:
-            return False
+    if i == 'None':
+    	add_mac(interface,macaddr)
     else:
 	config_list = read_config()
-	if macaddr in config_list[i]:
-	    return True
-	else:
-	    try:
-                config_list[i] = '\toption macaddr '+"'"+macaddr+"'\n"
-                save_config(config_list)
-                return True
-    	    except:
-                return False
+	if macaddr not in config_list[i]:
+            config_list[i] = '\toption macaddr '+"'"+macaddr+"'\n"
+            save_config(config_list)
 
 def apply_mac():
-    try:
-        print 'Waiting for Change & Apply MAC Address...'
-        os.system('/etc/init.d/network restart')
-	time.sleep(20)
-        return True
-    except:
-        return False
+    print 'Waiting for Applying MAC Address...'
+    os.system('/etc/init.d/network restart')
+    time.sleep(20)
 
 def get_line_of_mac(interface):
     config_list = read_config()
     i = get_info_of(interface)
-    if i == False:
-        return 'had not set mac address!'
+    if i == 'None':
+        return 'None'
     else:
         return config_list[i]
 
