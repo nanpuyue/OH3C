@@ -81,8 +81,8 @@ def change_mac(interface,macaddr):
 
 def apply_mac():
     try:
+        print 'Waiting for Change & Apply MAC Address...'
         os.system('/etc/init.d/network restart')
-	print 'Waiting for Change & Apply MAC Address...'
 	time.sleep(20)
         return True
     except:

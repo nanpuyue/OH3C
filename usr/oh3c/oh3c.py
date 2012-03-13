@@ -19,7 +19,7 @@ def prompt_user_info():
     password = raw_input('Input password:')
     dev = raw_input('Decice(eth1 by default): ')
     if not dev: dev = 'eth1'
-    macaddr = raw_input('MAC:\n ')
+    macaddr = raw_input('MAC:(no input for no change):')
     if not macaddr: macaddr = 'default'
     return name, password, dev,macaddr
 
@@ -60,8 +60,8 @@ def main():
     macaddr = login_info[3]
     line_of_mac = macmgr.get_line_of_mac("'wan'")
     if ((macaddr != 'default') and (macaddr not in line_of_mac)):
-    	macmgr.change_mac("'wan'",login_info[3])
-	macmgr.apply_mac()
+        macmgr.change_mac("'wan'",login_info[3])
+        macmgr.apply_mac()
     login_info_new = login_info[0:3]
     oh3c = eapauth.EAPAuth(login_info_new)
     oh3c.serve_forever()
