@@ -1,14 +1,13 @@
 """ User Management Module
 
 This module reads the 'users.conf' file and gets all users's logging info.
+
+user_info_index = ['account', 'password', 'device','macaddr']
 """
 
 __all__ = ["usermgr"]
 
 import ConfigParser
-#import os
-
-#user_info_index = ['account', 'password', 'device','macaddr']
 
 class usermgr:
     def __init__(self):
@@ -27,6 +26,10 @@ class usermgr:
             users_info.append((account, dev,macaddr))
         return users_info
     
+    def delete_user(self, user_name):
+        self.cf.remove_section(user_name)
+        self.save_config()
+    
     def create_user(self, user_info):
         self.cf.add_section(user_info[0])
         self.update_user_info(user_info)
@@ -35,9 +38,12 @@ class usermgr:
         self.cf.set(user_info[0], 'password', user_info[1])
         self.cf.set(user_info[0], 'dev', user_info[2])
         self.cf.set(user_info[0], 'macaddr', user_info[3])
-        fp = open(self.users_config_file, 'w')
-        self.cf.write(fp)
-        fp.close()
+        self.save_config()
+        
+    def save_config(self):
+        users_config = open(self.users_config_file, 'w')
+        self.cf.write(users_config)
+        users_config.close()
 
     def get_user_info(self, idx):
         account = self.cf.sections()[idx]

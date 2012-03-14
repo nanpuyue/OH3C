@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding:utf-8 -*-
 """ Main program for oh3c.
 
@@ -40,7 +40,7 @@ def main():
     else: 
         users_info = um.get_users_info()
 
-        print '0. Add a new user'
+        print '0. Create/Update a user info'
         for i in range(len(users_info)):
             print i+1, users_info[i]
 
@@ -51,11 +51,13 @@ def main():
                 print 'Please input a valid number!'
             else: break;
         if (choice == 0):
+            login_info = prompt_user_info()
             try:
-                login_info = prompt_user_info()
                 um.create_user(login_info)
+                print 'Create user info Successfully !'
             except ConfigParser.DuplicateSectionError:
-                print 'user already exist!'
+                um.update_user_info(login_info)
+                print 'Update user info Successfully !'
         else: login_info =  um.get_user_info(choice-1)
     macaddr = login_info[3]
     line_of_mac = macmgr.get_line_of_mac("'wan'")
