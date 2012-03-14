@@ -160,7 +160,7 @@ class EAPAuth:
                 # strip the ethernet_header and handle
                 self.EAP_handler(eap_packet[14:])
         except KeyboardInterrupt:
-            print Fore.RED + Style.BRIGHT + 'Interrupted by user' + Style.RESET_ALL
+            print 'Interrupted by user'
             self.send_logoff()
 
 def daemonize (stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
