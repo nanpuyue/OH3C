@@ -27,35 +27,10 @@ class EAPAuth:
         # get local ethernet card address
         self.mac_addr = self.client.getsockname()[4]
         self.ethernet_header = get_ethernet_header(self.mac_addr, PAE_GROUP_ADDR, ETHERTYPE_PAE)
-        self.loaded_plugins = []
-        self.loading_plugin_names = []
         self.has_sent_logoff = False
         self.login_info = login_info
 
-    def load_plugins(self):
-        homedir = os.path.expanduser('~'+os.getenv('USER')) 
-        sys.path.insert(0, homedir + '/.oh3c/plugins')
-        self.load_plugins = map(__import__, self.loading_plugin_names)
-        #for loading_plugin_name in self.loading_plugin_names:
-            #loaded_plugin = __import__('plugins.' + loading_plugin_name)
-            #self.loaded_plugins.append(getattr(loaded_plugin, loading_plugin_name))
-
-    def invoke_plugins(self, func_name):
-        for plugin in self.loaded_plugins:
-            pid = os.fork()
-            if pid == 0:
-                if hasattr(plugin, 'root_privilege') and plugin.root_privilege == True:
-                    pass
-                else:
-                    uid = pwd.getpwnam(os.getenv('USER'))[2]
-                    os.setuid(uid)
-                getattr(plugin, func_name)(self)
-                exit(0)
-
     def send_start(self):
-        # invoke plugins 
-        self.invoke_plugins('before_auth')
-
         # sent eapol start packet
         eap_start_packet = self.ethernet_header + get_EAPOL(EAPOL_START)
         self.client.send(eap_start_packet)
@@ -63,9 +38,6 @@ class EAPAuth:
         print 'Sending EAPOL start'
 
     def send_logoff(self):
-        # invoke plugins 
-        self.invoke_plugins('after_logoff')
-
         # sent eapol logoff packet
         eap_logoff_packet = self.ethernet_header + get_EAPOL(EAPOL_LOGOFF)
         self.client.send(eap_logoff_packet)
@@ -109,19 +81,13 @@ class EAPAuth:
             code, id, eap_len = unpack("!BBH", eap_packet[4:8])
             if code == EAP_SUCCESS:
                 print 'Got EAP Success'
-                # invoke plugins 
-                self.invoke_plugins('after_auth_succ')
                 daemonize('/dev/null','/tmp/daemon.log','/tmp/daemon.log')
             elif code == EAP_FAILURE:
                 if (self.has_sent_logoff):
                     print 'Logoff Successfully!'
-                    # invoke plugins 
-                    self.invoke_plugins('after_logoff')
                     self.display_login_message(eap_packet[10:])
                 else:
                     print 'Got EAP Failure'
-                    # invoke plugins 
-                    self.invoke_plugins('after_auth_fail')
                     self.display_login_message(eap_packet[10:])
                 exit(-1)
             elif code == EAP_RESPONSE:
@@ -148,8 +114,6 @@ class EAPAuth:
 
     def serve_forever(self):
         try:
-            #print self.login_info
-            self.load_plugins()
             self.send_start()
             while 1:
                 try:

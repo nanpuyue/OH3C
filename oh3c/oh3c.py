@@ -17,11 +17,11 @@ import macmgr
 def prompt_user_info():
     name = raw_input('Input user name:')
     password = raw_input('Input password:')
-    dev = raw_input('Decice(eth1 by default): ')
+    dev = raw_input('Decice(Press "Enter" to use eth1 as default): ')
     if not dev: dev = 'eth1'
-    macaddr = raw_input('MAC:(no input for no change):')
+    macaddr = raw_input('MAC(Press "Enter" if you don\'t need to use binding MAC-address): ')
     if not macaddr: macaddr = 'default'
-    return name, password, dev,macaddr
+    return name, password, dev, macaddr
 
 def main():
     # check for root privilege
@@ -29,8 +29,9 @@ def main():
         print ('Require the permission of root!')
         exit(-1)
 
-    um = usermgr.usermgr()
+    um = usermgr.UserMgr()
     login_info = []
+    # test whether user info is empty
     if (um.get_user_number() == 0):
         choice = raw_input('No user conf file found, creat a new one?\n<Y/N>: ')
         if choice == 'y' or choice == 'Y': 
@@ -40,7 +41,8 @@ def main():
     else: 
         users_info = um.get_users_info()
 
-        print '0. Create/Update a user info'
+        # print menu
+        print '0. Create/Modify user info'
         for i in range(len(users_info)):
             print i+1, users_info[i]
 
@@ -50,20 +52,24 @@ def main():
             except ValueError:
                 print 'Please input a valid number!'
             else: break;
+        # chioce to add/modify a user
         if (choice == 0):
             login_info = prompt_user_info()
             try:
                 um.create_user(login_info)
-                print 'Create user info Successfully !'
+                print 'Create user info Successfully!'
             except ConfigParser.DuplicateSectionError:
                 um.update_user_info(login_info)
-                print 'Update user info Successfully !'
+                print 'Update user info Successfully!'
         else: login_info =  um.get_user_info(choice-1)
+
+    # change mac address for binding mac user
     macaddr = login_info[3]
     line_of_mac = macmgr.get_line_of_mac("'wan'")
     if macaddr not in line_of_mac and macaddr != 'default':
         macmgr.change_mac("'wan'",macaddr)
         macmgr.apply_mac()
+    #TODO: delete the following line 
     login_info_new = login_info[0:3]
     oh3c = eapauth.EAPAuth(login_info_new)
     oh3c.serve_forever()
