@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# filename: macmgr.py
 """        Module for Changing the MAC on Openwrt
 
     This module read and write to file '/etc/config/network'.
@@ -12,9 +14,6 @@
     Note: The name of Interface must like this:
         "'wan'" or "'lan'"
 """
-
-#!/usr/bin/python
-# filename: macmgr.py
 
 __name__ = ["macmgr"]
 
@@ -31,10 +30,10 @@ def seek_in_list(target,list_name,start_number):
     for i in range(start_number,length):
         if target in list_name[i]:
             break
-    if target not in list_name[i]:
-        return 'None'
-    else:
+    if target in list_name[i]:
         return i
+    else:
+        return -1
 
 def get_info_of(interface):
     config_list = read_config()
@@ -42,10 +41,10 @@ def get_info_of(interface):
     b = seek_in_list('config',config_list,a+1)
     config_list_light = config_list[a:b]
     c = seek_in_list('option macaddr',config_list_light,0)
-    if c == 'None':
-        return 'None'
+    if 'option macaddr' in config_list_light[c]:
+        return a+c
     else:
-	return a+c
+	return -1
 
 def save_config(config_list):
     config_file = open('/etc/config/network','w')
@@ -60,7 +59,7 @@ def add_mac(interface,macaddr):
 
 def change_mac(interface,macaddr):
     i = get_info_of(interface)
-    if i == 'None':
+    if i == -1:
     	add_mac(interface,macaddr)
     else:
 	config_list = read_config()
@@ -75,7 +74,7 @@ def apply_mac():
 def get_line_of_mac(interface):
     config_list = read_config()
     i = get_info_of(interface)
-    if i == 'None':
+    if i == -1:
         return 'None'
     else:
         return config_list[i]
