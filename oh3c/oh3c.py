@@ -65,11 +65,12 @@ def main():
 
     # change mac address for binding mac user
     macaddr = login_info[3]
-    line_of_mac = macmgr.get_line_of_mac("'wan'")
-    if macaddr not in line_of_mac and macaddr != 'default':
-        macmgr.change_mac("'wan'",macaddr)
-        macmgr.apply_mac()
-    #TODO: delete the following line 
+    if macaddr != 'default':
+        line_of_mac = macmgr.get_line_of_mac("'wan'")
+        if macaddr not in line_of_mac:
+            macmgr.change_mac("'wan'",macaddr)
+            macmgr.apply_mac()
+    # TODO: delete the following line 
     login_info_new = login_info[0:3]
     oh3c = eapauth.EAPAuth(login_info_new)
     oh3c.serve_forever()
