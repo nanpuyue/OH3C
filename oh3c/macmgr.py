@@ -19,7 +19,6 @@
 __name__ = ["macmgr"]
 
 import os
-import time
 
 def read_config():
     config_file = open('/etc/config/network','r')
@@ -72,7 +71,6 @@ def change_mac(interface,macaddr):
 def apply_mac():
     print 'Waiting for Applying MAC Address...'
     os.system('/etc/init.d/network restart')
-    time.sleep(20)
 
 def get_line_of_mac(interface):
     config_list = read_config()
