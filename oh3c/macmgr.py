@@ -47,7 +47,7 @@ def get_info_of(interface):
     if 'option macaddr' in config_list_light[c]:
         return a+c
     else:
-	return -1
+        return -1
 
 def save_config(config_list):
     config_file = open('/etc/config/network','w')
@@ -58,7 +58,7 @@ def add_mac(interface,macaddr):
     config_list = read_config()
     i = seek_in_list('config interface '+interface,config_list,0)
     if i == -1:
-        print 'No config of interface '+interface+'found !'
+        print 'No config of interface '+interface+' found !'
         exit()
     config_list.insert(i+1,'\toption macaddr '+"'"+macaddr+"'\n")
     save_config(config_list)
@@ -68,8 +68,8 @@ def change_mac(interface,macaddr):
     if i == -1:
     	add_mac(interface,macaddr)
     else:
-	config_list = read_config()
-	if macaddr not in config_list[i]:
+        config_list = read_config()
+        if macaddr not in config_list[i]:
             config_list[i] = '\toption macaddr '+"'"+macaddr+"'\n"
             save_config(config_list)
 

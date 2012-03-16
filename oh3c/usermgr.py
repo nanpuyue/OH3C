@@ -1,6 +1,6 @@
 """ User Management Module
 
-This module reads the 'oh3c' file and manage all users's login info.
+This module reads the '/etc/config/oh3c' file and manage all users's login info.
 
 """
 
@@ -10,14 +10,17 @@ import ConfigParser
 
 class UserMgr:
     def __init__(self):
-        self.users_info_file_path= '/etc/oh3c' 
+        self.users_info_file= '/etc/config/oh3c' 
         self.cf = ConfigParser.ConfigParser()
-        self.cf.read(self.users_info_file_path)
+        self.cf.read(self.users_info_file)
        
     def get_user_number(self):
         """ Get the number of users in user info file
         """
         return len(self.cf.sections())
+
+    def get_users_list(self):
+        return self.cf.sections()
 
     def get_users_info(self):
         """ Get an outline of all users info,
@@ -45,11 +48,11 @@ class UserMgr:
         self.save_config()
         
     def save_config(self):
-        users_config = open(self.users_info_file_path, 'w')
+        users_config = open(self.users_info_file, 'w')
         self.cf.write(users_config)
         users_config.close()
 
-#user_info_index = ['account', 'password', 'device','macaddr']
+    #user_info_index = ['account', 'password', 'device','macaddr']
     def get_user_info(self, idx):
         account = self.cf.sections()[idx]
         password = self.cf.get(account,'password')
