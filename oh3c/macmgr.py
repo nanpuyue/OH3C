@@ -39,7 +39,10 @@ def get_info_of(interface):
     config_list = read_config()
     a = seek_in_list('config interface '+interface,config_list,0)
     b = seek_in_list('config',config_list,a+1)
-    config_list_light = config_list[a:b]
+    if b == -1:
+        config_list_light = config_list[a:]
+    else:
+        config_list_light = config_list[a:b]
     c = seek_in_list('option macaddr',config_list_light,0)
     if 'option macaddr' in config_list_light[c]:
         return a+c
@@ -54,6 +57,9 @@ def save_config(config_list):
 def add_mac(interface,macaddr):
     config_list = read_config()
     i = seek_in_list('config interface '+interface,config_list,0)
+    if i == -1:
+        print 'No config of interface '+interface+'found !'
+        exit()
     config_list.insert(i+1,'\toption macaddr '+"'"+macaddr+"'\n")
     save_config(config_list)
 
