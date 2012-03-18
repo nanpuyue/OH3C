@@ -1,0 +1,12 @@
+#!/bin/sh
+echo "帮助您自动生成可发布的源码包..."
+
+echo "1、调用automake和autoconf等标准工具"
+autoreconf --install
+
+echo "2、调用./configure脚本自动完成各项检查"
+./configure
+
+echo "3、调用make工具生成tar.gz源代码压缩包"
+make dist --quiet
+ls *.tar.gz || ls *.tar.bz2
