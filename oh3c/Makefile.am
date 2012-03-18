@@ -1,6 +1,8 @@
 bin_SCRIPTS = oh3c
 oh3c:
-	echo "#!$(PYTHON) $(pkgpythondir)/oh3c.py" > $@
+	echo "#!/bin/sh"                       > $@
+	echo "python $(pkgpythondir)/oh3c.py" >> $@
+CLEANFILES = $(bin_SCRIPTS)
 
 python_PYTHON = $(NULL)
 pkgpython_PYTHON = $(NULL)
