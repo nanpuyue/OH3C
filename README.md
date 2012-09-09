@@ -6,7 +6,7 @@ OH3C旨在为openwrt提供h3c 802.1x的认证客户端。
 安装
 -----
 
-见项目wik：https://github.com/nanpuyue/OH32.-OH3C安装教程
+见项目wik：https://github.com/nanpuyue/OH3C/2.-OH3C安装教程
 
 更新
 -------
